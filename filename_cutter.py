@@ -9,14 +9,16 @@ def filename_cutter(path):
         print("Path not found!")
         return
     
-    # Получаем список файлов
+    # Получаем список элементов
     content_list = os.listdir(path)
     
     # Бежим по этому списку
     for el_full_name in content_list:
         print("=========")
         print("el_full_name:", el_full_name)
+        # Склеиваем полный путь и имя элемента для дальнейшей работы
         el_path = os.path.join(path, el_full_name)
+        # Нормализация на всякий случай (слэши разные...)
         el_path = os.path.normpath(el_path)
         print("el_path:", el_path)
         

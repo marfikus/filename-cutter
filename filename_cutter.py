@@ -2,7 +2,7 @@
 import os
 
 PATH = os.getcwd() + r"\for_tests"
-NAME_MAX_LENGTH = 5
+NAME_MAX_LENGTH = 50
 
 def filename_cutter(path):
     if not os.path.exists(path):
@@ -24,15 +24,18 @@ def filename_cutter(path):
         if os.path.isfile(el_path):
             # Если имя файла длиннее нормы
             if len(el_full_name) > NAME_MAX_LENGTH:
+                print("Need to trim name")
                 # Отделяем расширение от имени
                 el_name, el_ext = os.path.splitext(el_full_name)
                 # Подрезаем имя до нормы
-                el_name = el_name[:NAME_MAX_LENGTH]
+                el_name = el_name[:NAME_MAX_LENGTH - len(el_ext)]
                 # Склеиваем обратно
                 el_new_full_name = el_name + el_ext
                 print(el_new_full_name)
-                input()
                 # Переименовываем файл 
+                el_new_path = os.path.join(path, el_new_full_name)
+                el_new_path = os.path.normpath(el_new_path)                
+                os.rename(el_path, el_new_path)
         # Иначе, если это каталог
             # Вызываем эту же функцию для этого каталога
             

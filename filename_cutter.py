@@ -2,7 +2,7 @@
 import os
 
 PATH = os.getcwd() + r"\for_tests"
-NAME_MAX_LENGTH = 50
+NAME_MAX_LENGTH = 10
 
 def filename_cutter(path):
     if not os.path.exists(path):
@@ -14,14 +14,15 @@ def filename_cutter(path):
     
     # Бежим по этому списку
     for el_full_name in content_list:
-        print("====================================================")
-        print(el_full_name)
+        print("=========")
+        print("el_full_name:", el_full_name)
         el_path = os.path.join(path, el_full_name)
         el_path = os.path.normpath(el_path)
-        print(el_path)
+        print("el_path:", el_path)
         
         # Если это файл
         if os.path.isfile(el_path):
+            print("Is file")
             # Если имя файла длиннее нормы
             if len(el_full_name) > NAME_MAX_LENGTH:
                 print("Need to trim name")
@@ -31,12 +32,28 @@ def filename_cutter(path):
                 el_name = el_name[:NAME_MAX_LENGTH - len(el_ext)]
                 # Склеиваем обратно
                 el_new_full_name = el_name + el_ext
-                print(el_new_full_name)
+                print("el_new_full_name:", el_new_full_name)
                 # Переименовываем файл 
                 el_new_path = os.path.join(path, el_new_full_name)
-                el_new_path = os.path.normpath(el_new_path)                
+                el_new_path = os.path.normpath(el_new_path)
                 os.rename(el_path, el_new_path)
         # Иначе, если это каталог
+        elif os.path.isdir(el_path):
+            print("Is dir")
+            # Если имя каталога длиннее нормы
+            if len(el_full_name) > NAME_MAX_LENGTH:
+                print("Need to trim name")
+                # Подрезаем имя до нормы
+                el_new_full_name = el_full_name[:NAME_MAX_LENGTH]
+                print("el_new_full_name:", el_new_full_name)
+                # Переименовываем каталог
+                el_new_path = os.path.join(path, el_new_full_name)
+                el_new_path = os.path.normpath(el_new_path)
+                os.rename(el_path, el_new_path)
+                el_path = el_new_path
             # Вызываем эту же функцию для этого каталога
-            
+            filename_cutter(el_path)
+    
+print("=========================")
 filename_cutter(PATH)
+print("=========================")

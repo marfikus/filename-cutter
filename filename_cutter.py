@@ -1,10 +1,7 @@
 
 import os
 
-PATH = os.getcwd() + r"\for_tests"
-NAME_MAX_LENGTH = 10
-
-def filename_cutter(path):
+def filename_cutter(path, max_name_length):
     if not os.path.exists(path):
         print("Path not found!")
         return
@@ -26,12 +23,12 @@ def filename_cutter(path):
         if os.path.isfile(el_path):
             print("Is file")
             # Если имя файла длиннее нормы
-            if len(el_full_name) > NAME_MAX_LENGTH:
+            if len(el_full_name) > max_name_length:
                 print("Need to trim name")
                 # Отделяем расширение от имени
                 el_name, el_ext = os.path.splitext(el_full_name)
                 # Подрезаем имя до нормы
-                el_name = el_name[:NAME_MAX_LENGTH - len(el_ext)]
+                el_name = el_name[:max_name_length - len(el_ext)]
                 # Склеиваем обратно
                 el_new_full_name = el_name + el_ext
                 print("el_new_full_name:", el_new_full_name)
@@ -43,10 +40,10 @@ def filename_cutter(path):
         elif os.path.isdir(el_path):
             print("Is dir")
             # Если имя каталога длиннее нормы
-            if len(el_full_name) > NAME_MAX_LENGTH:
+            if len(el_full_name) > max_name_length:
                 print("Need to trim name")
                 # Подрезаем имя до нормы
-                el_new_full_name = el_full_name[:NAME_MAX_LENGTH]
+                el_new_full_name = el_full_name[:max_name_length]
                 print("el_new_full_name:", el_new_full_name)
                 # Переименовываем каталог
                 el_new_path = os.path.join(path, el_new_full_name)
@@ -54,8 +51,11 @@ def filename_cutter(path):
                 os.rename(el_path, el_new_path)
                 el_path = el_new_path
             # Вызываем эту же функцию для этого каталога
-            filename_cutter(el_path)
+            filename_cutter(el_path, max_name_length)
+
+if __name__ == "__main__":
+    print("=========================")
+    PATH = os.getcwd() + r"\for_tests"
+    filename_cutter(PATH, max_name_length=10)
+    print("=========================")
     
-print("=========================")
-filename_cutter(PATH)
-print("=========================")

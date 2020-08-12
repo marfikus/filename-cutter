@@ -2,7 +2,7 @@
 import os
 
 PATH = os.getcwd() + r"\for_tests"
-NAME_MAX_LENGTH = 5
+NAME_MAX_LENGTH = 50
 
 def filename_cutter(path):
     if not os.path.exists(path):

@@ -2,6 +2,10 @@
 import os
 
 def filename_cutter(path, max_name_length):
+    if max_name_length <= 0:
+        print("'max_name_length' must be > 0")
+        return
+
     if not os.path.exists(path):
         print("Path not found!")
         return
@@ -12,6 +16,8 @@ def filename_cutter(path, max_name_length):
     # Бежим по этому списку
     for el_full_name in content_list:
         print("=========")
+        # Флаг разрешения переименования элемента
+        rename_allowed = False
         print("el_full_name:", el_full_name)
         # Склеиваем полный путь и имя элемента для дальнейшей работы
         el_path = os.path.join(path, el_full_name)
@@ -27,11 +33,13 @@ def filename_cutter(path, max_name_length):
                 print("Need to trim name")
                 # Отделяем расширение от имени
                 el_name, el_ext = os.path.splitext(el_full_name)
-                # Подрезаем имя до нормы
-                
-                # Исключить возможность чрезмерного обрезания) чтобы до нуля и в минус не уйти
-                
-                el_name = el_name[:max_name_length - len(el_ext)]
+                # Подрезаем имя до нормы,
+                # исключая возможность чрезмерного обрезания), чтобы до нуля и в минус не уйти
+                cut_index = max_name_length - len(el_ext)
+                if cut_index <= 0:
+                    print("Index for the cuttering is too small: {}\n Skip this element".format(cut_index))
+                    continue
+                el_name = el_name[:cut_index]
                 # Склеиваем обратно
                 el_new_full_name = el_name + el_ext
                 print("el_new_full_name:", el_new_full_name)
@@ -39,37 +47,48 @@ def filename_cutter(path, max_name_length):
                 el_new_path = os.path.join(path, el_new_full_name)
                 el_new_path = os.path.normpath(el_new_path)
                 # Проверяем на всякий случай существование такого же файла
-                if os.path.exists(el_new_path):
+                if not os.path.exists(el_new_path):
+                    rename_allowed = True
+                else:
                     print("File with the same name is already exists")
                     # Если такой файл уже есть, то добавляем в конце цифру
                     # и снова проверяем существование такого файла
                     # Когда будет найдено уникальное имя, тогда переименовываем файл
-                    i = 1
+                    i = 1 # номер итерации и окончание в имени элемента
                     while True:
                         print("i:", i)
-                        # Меняем имя
+                        # Меняем имя.
                         # Формируем окончание имени
                         end_el_name = "_{}".format(i)
+                        # Снова делим имя
                         el_name, el_ext = os.path.splitext(el_new_full_name)
-                        
                         if i == 1:
                             # На первой итерации надо ещё подрезать имя 
                             # на длину добавляемого окончания
-                            el_name = el_name[:len(el_name) - len(end_el_name)]
-                            
-                            # Исключить возможность чрезмерного обрезания) чтобы до нуля и в минус не уйти
-                            
+                            cut_index = len(el_name) - len(end_el_name)
+                            if cut_index <= 0:
+                                print("Index for the cuttering is too small: {}\n Skip this element".format(cut_index))
+                                break
+                            el_name = el_name[:cut_index]
                         else:
                             # Если не первая итерация уже, 
-                            # то надо сначала убрать старую цифру из имени 
-                            el_name = el_name[:len(el_name) - (len(str(i - 1)) + 1)]
-                            
+                            # то надо сначала убрать старую цифру из имени
+                            cut_index = len(el_name) - (len(str(i - 1)) + 1)
+                            if cut_index <= 0:
+                                print("Index for the cuttering is too small: {}\n Skip this element".format(cut_index))
+                                break
+                            el_name = el_name[:cut_index]
                             # А если добавляется разряд в окончании, то надо ещё обрезать на символ
                             # (маловероятно что такое случится, но в общем возможно... заморочки)
                             if len(str(i)) > len(str(i - 1)):
                                 print("Added digit in the 'i'")
-                                el_name = el_name[:len(el_name) - 1]
-                            
+                                cut_index = len(el_name) - 1
+                                if cut_index <= 0:
+                                    print("Index for the cuttering is too small: {}\n Skip this element".format(cut_index))
+                                    break
+                                el_name = el_name[:cut_index]
+                                
+                        # Добавляем окончание, снова склеиваем
                         el_name += end_el_name
                         el_new_full_name = el_name + el_ext
                         print("el_new_full_name:", el_new_full_name)
@@ -77,10 +96,14 @@ def filename_cutter(path, max_name_length):
                         el_new_path = os.path.normpath(el_new_path)
                         # Снова проверяем существование
                         if not os.path.exists(el_new_path):
+                            rename_allowed = True
                             break
                         i += 1
                 # Переименовываем файл 
-                os.rename(el_path, el_new_path)
+                if rename_allowed:
+                    os.rename(el_path, el_new_path)
+                else:
+                    print("Not allowed rename this element")
         # Иначе, если это каталог
         elif os.path.isdir(el_path):
             print("Is dir")
@@ -102,6 +125,6 @@ def filename_cutter(path, max_name_length):
 if __name__ == "__main__":
     print("=========================")
     PATH = os.getcwd() + r"\for_tests"
-    filename_cutter(PATH, max_name_length=8)
+    filename_cutter(PATH, max_name_length=5)
     print("=========================")
     

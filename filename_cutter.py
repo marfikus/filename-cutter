@@ -25,12 +25,12 @@ def filename_cutter(path, max_name_length):
         el_path = os.path.normpath(el_path)
         print("el_path:", el_path)
         
-        # Если это файл
-        if os.path.isfile(el_path):
-            print("Is file")
-            # Если имя файла длиннее нормы
-            if len(el_full_name) > max_name_length:
-                print("Need to trim name")
+        # Если имя элемента длиннее нормы
+        if len(el_full_name) > max_name_length:
+            print("Need to trim name")
+            # Если это файл
+            if os.path.isfile(el_path):
+                print("Is file")
                 # Отделяем расширение от имени
                 el_name, el_ext = os.path.splitext(el_full_name)
                 # Подрезаем имя до нормы,
@@ -104,12 +104,10 @@ def filename_cutter(path, max_name_length):
                     os.rename(el_path, el_new_path)
                 else:
                     print("Not allowed rename this element")
-        # Иначе, если это каталог
-        elif os.path.isdir(el_path):
-            print("Is dir")
-            # Если имя каталога длиннее нормы
-            if len(el_full_name) > max_name_length:
-                print("Need to trim name")
+                    
+            # Иначе, если это каталог
+            elif os.path.isdir(el_path):
+                print("Is dir")
                 # Подрезаем имя до нормы
                 el_new_full_name = el_full_name[:max_name_length]
                 print("el_new_full_name:", el_new_full_name)
@@ -118,8 +116,8 @@ def filename_cutter(path, max_name_length):
                 el_new_path = os.path.normpath(el_new_path)
                 os.rename(el_path, el_new_path)
                 el_path = el_new_path
-            # Вызываем эту же функцию для этого каталога
-            filename_cutter(el_path, max_name_length)
+                # Вызываем эту же функцию для этого каталога
+                filename_cutter(el_path, max_name_length)
         input()
 
 if __name__ == "__main__":

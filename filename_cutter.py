@@ -18,8 +18,6 @@ def filename_cutter(path, max_name_length):
         print("=========")
         # Флаг разрешения переименования элемента
         rename_allowed = False
-        # el_is_file = False
-        # el_is_dir = False
         print("el_full_name:", el_full_name)
         # Склеиваем полный путь и имя элемента для дальнейшей работы
         el_path = os.path.join(path, el_full_name)
@@ -30,10 +28,6 @@ def filename_cutter(path, max_name_length):
         # Если имя элемента длиннее нормы
         if len(el_full_name) > max_name_length:
             print("Need to trim name")
-            # Если это файл
-            # if os.path.isfile(el_path):
-                # print("Is file")
-                # el_is_file = True
                 
             # Отделяем расширение от имени 
             # (а если это каталог, то просто el_ext будет пустой)
@@ -47,14 +41,6 @@ def filename_cutter(path, max_name_length):
             el_name = el_name[:cut_index]
             # Склеиваем обратно
             el_new_full_name = el_name + el_ext
-            # elif os.path.isdir(el_path):
-                # print("Is dir")
-                # el_is_dir = True
-                # Подрезаем имя до нормы
-                # el_new_full_name = el_full_name[:max_name_length]
-            # else:
-                # print("Unsupported element type!")
-                # continue
             
             print("el_new_full_name:", el_new_full_name)
             # Подготавливаем путь
@@ -75,11 +61,8 @@ def filename_cutter(path, max_name_length):
                     # Формируем окончание имени
                     end_el_name = "_{}".format(i)
                     
-                    # if el_is_file:
                     # Снова делим имя
                     el_name, el_ext = os.path.splitext(el_new_full_name)
-                    # elif el_is_dir:
-                        # el_name = el_new_full_name
                         
                     if i == 1:
                         # На первой итерации надо ещё подрезать имя 
@@ -110,10 +93,7 @@ def filename_cutter(path, max_name_length):
                     # Добавляем окончание, снова склеиваем
                     el_name += end_el_name
                     
-                    # if el_is_file:
                     el_new_full_name = el_name + el_ext
-                    # elif el_is_dir:
-                    # el_new_full_name = el_name
                         
                     print("el_new_full_name:", el_new_full_name)
                     el_new_path = os.path.join(path, el_new_full_name)
